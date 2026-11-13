@@ -59,6 +59,7 @@ dependencies {
     //Para las corrutinas con alcance lifecycle (OPCIONAL)
     //implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.11.0")
 
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.amaurypm.videogamescm.R
 import com.amaurypm.videogamescm.data.remote.GamesApi
 import com.amaurypm.videogamescm.data.remote.RetrofitHelper
 import com.amaurypm.videogamescm.databinding.FragmentGamesListBinding
+import com.amaurypm.videogamescm.ui.adapters.GamesAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,12 +46,28 @@ class GamesListFragment : Fragment() {
                 val games = RetrofitHelper.getRetrofit().create(GamesApi::class.java)
                     .getGames("cm/games/games_list.php")
 
+                withContext(Dispatchers.Main){
+
+                    binding.rvGames.apply {
+                        layoutManager = LinearLayoutManager(requireContext())
+                        adapter = GamesAdapter(games){ selectedGame ->
+                            //Manejamos el click a cada juego
+                            requireActivity().supportFragmentManager.beginTransaction().replace(
+                                R.id.fragment_container,
+                                GameDetailFragment.newInstance(selectedGame.id)
+                            ).addToBackStack(null).commit()
+                        }
+                    }
+
+                }
+
+
             }catch (e: Exception){
                 withContext(Dispatchers.Main){
                     Toast.makeText(
                         requireContext(),
-                        "No hay conexión disponible",
-                        Toast.LENGTH_SHORT
+                        "No hay conexión disponible: ${e.message}",
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
